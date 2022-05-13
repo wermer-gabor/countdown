@@ -1,8 +1,8 @@
-const toDoubleDigits = (number: number): string =>
-  number > 9 ? number.toString() : `0${number}`;
-
 const getFormattedSeconds = (seconds: number): string => {
-  let time = seconds;
+  const toDoubleDigits = (number: number): string =>
+    number > 9 ? number.toString() : `0${number}`;
+
+    let time = seconds;
   let formattedTime = "";
 
   const hours = Math.floor(time / 60 / 60);
@@ -37,6 +37,23 @@ const setClock = (seconds: number): void => {
   clock.textContent = formattedTime;
 };
 
+const setBeBack = (seconds: number) => {
+  const id = "be-back";
+
+  const beBackDate = new Date(Date.now() + seconds * 1000);
+
+  const time =
+    beBackDate.getHours() * 60 * 60 +
+    beBackDate.getMinutes() * 60 +
+    beBackDate.getSeconds();
+
+  const text = `Be back at ${getFormattedSeconds(time)}`;
+
+  const beBack = document.querySelector(`#${id}`)!;
+
+  beBack.textContent = text;
+};
+
 let timeout: NodeJS.Timeout;
 let time: number;
 const setTimer = (seconds: number): void => {
@@ -55,23 +72,6 @@ const setTimer = (seconds: number): void => {
   timeout = setTimeout(() => {
     setTimer(seconds - 1);
   }, 1000);
-};
-
-const setBeBack = (seconds: number) => {
-  const id = "be-back";
-
-  const beBackDate = new Date(Date.now() + seconds * 1000);
-
-  const time =
-    beBackDate.getHours() * 60 * 60 +
-    beBackDate.getMinutes() * 60 +
-    beBackDate.getSeconds();
-
-  const text = `Be back at ${getFormattedSeconds(time)}`;
-
-  const beBack = document.querySelector(`#${id}`)!;
-
-  beBack.textContent = text;
 };
 
 const buttons = [
