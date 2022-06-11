@@ -5,6 +5,7 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 module.exports = {
   entry: "./src/index.ts",
   mode: "production",
+  devtool: 'source-map',
   output: {
     filename: "index.js",
     path: path.resolve(__dirname, "build"),
@@ -18,6 +19,7 @@ module.exports = {
           loader: "babel-loader",
           options: {
             presets: ["@babel/preset-env", "@babel/preset-typescript"],
+            plugins: ['@babel/plugin-transform-runtime']
           },
         },
       },
@@ -26,6 +28,9 @@ module.exports = {
         use: [MiniCssExtractPlugin.loader, "css-loader"],
       },
     ],
+  },
+  resolve: {
+    extensions: ['.ts', '.js'],
   },
   plugins: [
     new HtmlWebpackPlugin({
