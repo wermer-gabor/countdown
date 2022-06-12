@@ -1,20 +1,27 @@
-import { Database, setUpClearDatabaseListener, setUpDatabaseSelectors } from './databases';
-import { setUpBusynessFrequencyInput } from './timer';
-import { TodoList } from './todos';
+import { BusynessFrequencySetter } from "./modules/busyness-frequency-setter";
+import {
+  DatabaseSelectorComponent,
+  SelectedDatabase,
+} from "./modules/database";
+import { TodoListComponent } from "./modules/todo-list";
 
+const selectedDatabase = new SelectedDatabase();
 
-let selectedDatabase: Database | null;
-const todoList = new TodoList();
+const databaseSelector = new DatabaseSelectorComponent({
+  containerId: "database-selector-container",
+  selectedDatabase,
+});
+databaseSelector.setUpListeners();
 
-const setSelectedDatabase = (database: Database | null) => {
-  selectedDatabase = database;
-  todoList.setDatabase(selectedDatabase);
-}
+const todoList = new TodoListComponent({
+  containerId: "todo-list-container",
+  selectedDatabase,
+});
+todoList.initialize();
 
-setUpClearDatabaseListener(() => {
-  todoList.setDatabase(selectedDatabase)
-})
-
-setUpDatabaseSelectors(setSelectedDatabase);
-
-setUpBusynessFrequencyInput(todoList.addTodo);
+const busynessFrequencySetter = new BusynessFrequencySetter({
+  containerId: "busyness-frequency-setter",
+  onCountdownFinished: todoList.addTodo,
+  selectedDatabase,
+});
+busynessFrequencySetter.setUpListeners();
