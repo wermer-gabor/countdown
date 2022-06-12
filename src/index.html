@@ -1,70 +1,116 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<head>
-  <meta charset="UTF-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Busyness generator</title>
 
-  <title>Busyness generator</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor"
+      crossorigin="anonymous"
+    />
 
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
+      crossorigin="anonymous"
+    ></script>
+  </head>
 
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+  <body>
+    <main class="d-flex flex-column p-5 vw-100">
+      <h1 class="text-center mb-5">Busyness generator</h1>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
-    crossorigin="anonymous"></script>
-</head>
+      <div id="database-selector-container" class="mb-5">
+        <h4 class="text-center mb-2">Select a database</h4>
 
-<body>
-  <main class="d-flex flex-column p-5 vw-100">
-    <h1 class="text-center mb-5">Busyness generator</h1>
+        <div class="d-flex justify-content-center align-items-center">
+          <div
+            id="database-options-container"
+            class="d-flex justify-content-center"
+          ></div>
 
-    <div class="mb-5">
-      <h4 class="text-center mb-2">Select a database</h4>
-
-      <div class="d-flex justify-content-center align-items-center">
-        <div id="database-selectors" class="d-flex justify-content-center"></div>
-
-        <button id="clear-databse" class="btn btn-primary">Clear selected database</button>
+          <button id="clear-database" class="btn btn-primary">
+            Clear selected database
+          </button>
+        </div>
       </div>
-    </div>
 
-    <div class="d-flex w-100">
-      <div class="card me-3 w-50">
-        <div class="card-header d-flex justify-content-between">
-          Things to do
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" role="button" id="todo-list-filter">
-            <label class="form-check-label user-select-none" role="button" for="todo-list-filter">Filter out done todos</label>
+      <div id="todo-list-container" class="d-flex w-100">
+        <div class="card me-3 w-50" style="height: fit-content">
+          <div class="card-header d-flex justify-content-between">
+            Things to do
+            <div class="form-check">
+              <input
+                id="todo-list-done-filter"
+                class="form-check-input"
+                type="checkbox"
+                role="button"
+              />
+              <label
+                class="form-check-label user-select-none"
+                role="button"
+                for="todo-list-done-filter"
+                >Filter out done todos</label
+              >
+            </div>
+          </div>
+
+          <ul id="todo-list" class="list-group list-group-flush"></ul>
+
+          <div class="card-footer py-3 h-100">
+            <form id="add-todo-form">
+              <div class="input-group">
+                <input
+                  class="form-control"
+                  type="text"
+                  placeholder="Something to do"
+                />
+                <button class="btn btn-primary">+ Add</button>
+              </div>
+            </form>
           </div>
         </div>
 
-        <ul id="todo-list" class="list-group list-group-flush">
-        </ul>
+        <div class="w-50" id="busyness-frequency-setter">
+          <div class="form-floating mb-3">
+            <input
+              id="busyness-frequency-input"
+              class="form-control"
+              type="number"
+              placeholder=""
+              min="0"
+            />
+            <label for="busyness-frequency" class="form-label"
+              >Busyness frequency (seconds)</label
+            >
+          </div>
 
-        <div class="card-footer py-3 h-100">
-          <form id="add-todo">
-            <div class="input-group">
-              <input class="form-control" type="text" placeholder="Something to do" />
-              <button class="btn btn-primary">+ Add</button>
+          <div id="lazy-text-container">
+            <h4 class="text-center">&uarr;</h4>
+            <h4 class="text-center">You gotta pump those numbers up</h4>
+            <div class="d-flex justify-content-center">
+              <img src="./assets/images/lazy.jpg" style="width: 500px" />
             </div>
-          </form>
+          </div>
+
+          <div id="busy-text-container" style="display: none">
+            <h4 class="text-center mb-4">
+              Next busy is coming right up in
+              <span id="next-busy-time">00:00:00</span>
+            </h4>
+
+            <h4 class="text-center">
+              Better be doing something until
+              <span id="keep-busy-time">00:00:00</span>
+            </h4>
+          </div>
         </div>
       </div>
-
-      <div class="w-50">
-        <div class="form-floating mb-3">
-          <input id="busyness-frequency" class="form-control" type="number" placeholder="" />
-          <label for="busyness-frequency" class="form-label">Busyness frequency (seconds)</label>
-        </div>
-
-        <h4 class="text-center mb-4">Next busy is coming right up in <span id="next-busy-clock">00:00:00</span></h4>
-
-        <h4 class="text-center">Better be doing something until <span id="keep-busy-until">00:00:00</span></h4>
-      </div>
-    </div>
-  </main>
-</body>
+    </main>
+  </body>
 </html>
