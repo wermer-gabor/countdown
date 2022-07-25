@@ -19,6 +19,8 @@ export class TodoListComponent {
     todoListDoneFilter: "todo-list-done-filter",
   };
 
+  private lastClickedTodoItemIndex: number | null = null;
+
   constructor({
     containerId,
     selectedDatabase,
@@ -163,22 +165,39 @@ export class TodoListComponent {
     todoList?.replaceWith(todoList.cloneNode(true));
     todoList = this.container.querySelector(`#${this.selectors.todoList}`);
 
+    this.lastClickedTodoItemIndex = null;
+
     todoList?.addEventListener("click", (event) => {
-      if (event.target instanceof HTMLElement) {
+      if (event.target instanceof HTMLElement && event instanceof MouseEvent) {
         const listItem = event.target.closest(
           "li[data-todo-id]"
         ) as HTMLLIElement | null;
 
         const id = listItem?.dataset.todoId;
+        if (id) {
+          const todoIndex = this.todos.findIndex((todo) => todo.id === id);
+          const min = Math.min(this.lastClickedTodoItemIndex ?? 0, todoIndex)
+          const max = Math.max(this.lastClickedTodoItemIndex ?? 0, todoIndex)
 
-        for (const todo of this.todos) {
-          if (todo.id === id) {
-            todo.isDone = !todo.isDone;
-            break;
+          for (let index = 0; index < this.todos.length; index++) {
+            const todo = this.todos[index];
+
+            if(event.shiftKey && this.lastClickedTodoItemIndex !== null) {
+              if (index > min && index < max || index === todoIndex) {
+                todo.isDone = !todo.isDone;
+              }
+            } else {
+              if(todoIndex === index) {
+                todo.isDone = !todo.isDone;
+                break;
+              }
+            }
           }
-        }
 
-        this.drawTodos();
+          this.lastClickedTodoItemIndex = todoIndex;
+
+          this.drawTodos();
+        }
       }
     });
   };
